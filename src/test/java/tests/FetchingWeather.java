@@ -13,13 +13,12 @@ public class FetchingWeather extends BaseUtil {
      * when-Submit the API
      * then-Validate the response
      */
-//dataProviderClass = Dataproviders.class ,dataProvider = "cityName"
+String validcityname;
+    int validcityId;
     @Test(dataProviderClass = Dataproviders.class ,dataProvider = "CityName")
     public void searchByCityName(String CityName) {
-//https://openweathermap.org
-        //RestAssured.baseURI="https://api.openweathermap.org";
+        validcityname=CityName;
         setUp();
-        //basePath="/api";
         given().log().all()
                 .queryParam("q", CityName)
                 .queryParam("appid", API_KEY)
@@ -35,9 +34,10 @@ public class FetchingWeather extends BaseUtil {
      * GET Request: /weather?id={city id}&appid={api key}
      * Response: JSON format
      */
-    //(dataProviderClass = Dataproviders.class ,dataProvider = "CityId")
+    
     @Test(dataProviderClass = Dataproviders.class ,dataProvider = "CityId")
     public void searchByCityID(int CityID) {
+        validcityId=CityID;
         setUp();
         given()
                 .accept(ContentType.JSON)
@@ -83,5 +83,33 @@ public class FetchingWeather extends BaseUtil {
                 .body("country", equalTo(Country));
     }
 
-
+//NegativeTest
+    @Test(dataProviderClass = Dataproviders.class ,dataProvider = "InvalidCityName")
+    public void searchByInvalidCityName(String WrongCityName) {
+        setUp();
+        given().log().all()
+                .queryParam("q", WrongCityName)
+                .queryParam("appid", API_KEY)
+                .when()
+                .get("/data/2.5/weather")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK)
+                .body("name", equalTo(validcityname));
+    }
+    //NegativeTest
+    @Test(dataProviderClass = Dataproviders.class ,dataProvider = "InvalidCityId")
+    public void searchByInvalidCityId(String WrongCityId) {
+        setUp();
+        //basePath="/api";
+        given().log().all()
+                .queryParam("q", WrongCityId)
+                .queryParam("appid", API_KEY)
+                .when()
+                .get("/data/2.5/weather")
+                .then().log().all()
+                .assertThat()
+                .statusCode(HttpStatus.SC_OK)
+                .body("name", equalTo(validcityId));
+    }
 }
