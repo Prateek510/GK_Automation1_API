@@ -20,5 +20,13 @@ public class Dataproviders {
     public static Object[][] ZipCode() {
         return new Object[][] {{993800, "ZA"}};
     }
+    @DataProvider(name = "InvalidCityName")
+    public static Object[][] InvalidCityName() {
+        return new Object[][] {{"Job"}};
+    }
+    @DataProvider(name = "InvalidCityId")
+    public static Object[][] InvalidCityId() {
+        return new Object[][] {{93800}};
+    }
 
 }
